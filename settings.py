@@ -32,6 +32,7 @@ MAP_FOLDER = path.join(GAME_FOLDER, 'maps')
 # Text Prompts
 FONT_NAME = 'arial'
 GAME_OVER_TEXT = "Game Over - You Died!"
+PRESS_TO_PLAY = "Press any Key to Start Playing or Press 'ESC' to Quit"
 PRESS_TO_PLAY_AGAIN = "Press any Key to Start Playing Again or Press 'ESC' to Quit"
 SCORE_TEXT = "Your Score was: "
 NEW_HIGHSCORE_TEXT = "Congrats! You set a new High Score of: "

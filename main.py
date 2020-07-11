@@ -1,4 +1,4 @@
-# Snake game
+# Snake game created by Niklas Moberg
 
 import pygame as pg
 import sys
@@ -22,6 +22,7 @@ class Game:
         self.map = Map(path.join(settings.MAP_FOLDER, settings.MAP_IMG))
         self.font_name = pg.font.match_font(settings.FONT_NAME)
         self.snake_spritesheet = Spritesheet(path.join(settings.IMG_FOLDER, settings.SNAKE_SPRITESHEET))
+        self.load_data()
 
     def load_data(self):
         # Load Highscore file
@@ -119,19 +120,24 @@ class Game:
             with open(path.join(settings.GAME_FOLDER, settings.HIGHSCORE_FILE), 'w') as f:
                 self.highscore = self.score
                 f.write(str(self.score))
-            self.draw_text(settings.NEW_HIGHSCORE_TEXT + str(self.score), 25, settings.RED, settings.WIDTH / 2, settings.HEIGHT * 3 / 4)
+            self.draw_text(settings.NEW_HIGHSCORE_TEXT + str(self.score), 30, settings.RED, settings.WIDTH / 2, settings.HEIGHT * 2 / 3)
         else:
             self.draw_text(settings.SCORE_TEXT + str(self.score), 25, settings.YELLOW, settings.WIDTH / 2, settings.HEIGHT * 3 / 4)
-            self.draw_text(settings.HIGH_SCORE_TEXT + str(self.highscore), 15, settings.RED, settings.WIDTH / 2, settings.HEIGHT * 5 / 6)
+            self.draw_text(settings.HIGH_SCORE_TEXT + str(self.highscore), 30, settings.RED, settings.WIDTH / 2, settings.HEIGHT * 3 / 5)
 
         self.draw_text(settings.GAME_OVER_TEXT, 40, settings.WHITE, settings.WIDTH / 2, settings.HEIGHT / 4)
-        self.draw_text(settings.PRESS_TO_PLAY_AGAIN, 17, settings.YELLOW, settings.WIDTH / 2, settings.HEIGHT * 1 / 2)
+        self.draw_text(settings.PRESS_TO_PLAY_AGAIN, 17, settings.YELLOW, settings.WIDTH / 2, settings.HEIGHT * 2 / 5)
         pg.display.flip()
         self.wait_for_key()
 
     def launch_start_screen(self):
         # Start screen
-        pass
+        self.screen.fill(settings.BGCOLOR)
+        self.draw_text(settings.TITLE, 60, settings.YELLOW, settings.WIDTH / 2, settings.HEIGHT / 3)
+        self.draw_text(settings.PRESS_TO_PLAY, 20, settings.GREEN, settings.WIDTH / 2, settings.HEIGHT * 3 / 5)
+        self.draw_text(settings.HIGH_SCORE_TEXT + str(self.highscore), 25, settings.RED, settings.WIDTH / 2, settings.HEIGHT * 1 / 6)
+        pg.display.flip()
+        self.wait_for_key()
 
     # Waiting for any key input
     def wait_for_key(self):
