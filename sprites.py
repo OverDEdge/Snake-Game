@@ -75,6 +75,7 @@ class Snake(pg.sprite.Sprite):
         self.prev_dir = self.dir
         self.last_change_img_time = 0
         self.img_upd_time = settings.SWITCH_SPRITE_IMAGE
+        self.update_rate = settings.SNAKE_START_UPDATE_RATE
 
         # Key mappings
         self.inputState = {
@@ -86,6 +87,8 @@ class Snake(pg.sprite.Sprite):
         }
 
     def update(self):
+        # Check if speed shall increase
+        self.set_speed()
 
         # Get user input
         self.move_pressed_key()
@@ -98,7 +101,7 @@ class Snake(pg.sprite.Sprite):
 
         # Only update position at certain intervals
         # SNAKE_UPDATE_RATE determines snake speed
-        if now - self.pos_update_time > settings.SNAKE_UPDATE_RATE:
+        if now - self.pos_update_time > self.update_rate:
 
             if check_for_collision(self, self.game.snake_body, False) or check_for_collision(self, self.game.walls, False):
                 self.collide = True
@@ -106,6 +109,21 @@ class Snake(pg.sprite.Sprite):
                 self.update_positions()
 
         self.update_eat_food()
+
+    def set_speed(self):
+        if settings.LEVEL0 < self.game.score < settings.LEVEL1:
+            self.update_rate = settings.SNAKE_LEVEL1_UPDATE_RATE
+        elif settings.LEVEL1 <= self.game.score < settings.LEVEL2:
+            self.update_rate = settings.SNAKE_LEVEL2_UPDATE_RATE
+        elif settings.LEVEL2 <= self.game.score < settings.LEVEL3:
+            self.update_rate = settings.SNAKE_LEVEL3_UPDATE_RATE
+        elif settings.LEVEL3 <= self.game.score < settings.LEVEL4:
+            self.update_rate = settings.SNAKE_LEVEL4_UPDATE_RATE
+        elif settings.LEVEL4 <= self.game.score < settings.LEVEL5:
+            self.update_rate = settings.SNAKE_LEVEL5_UPDATE_RATE
+        elif self.game.score >= settings.LEVEL5:
+            self.update_rate = settings.SNAKE_LEVEL6_UPDATE_RATE
+
 
     def update_eat_food(self):
         '''
