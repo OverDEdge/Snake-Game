@@ -4,7 +4,12 @@ import pygame as pg
 import sys
 from os import path
 import random
-from .sprites import Snake, BodyPart, Food, Spritesheet, Wall, Ground
+from .food import Food
+from .body_part import BodyPart
+from .ground import Ground
+from .snake import Snake
+from .spritesheet import Spritesheet
+from .wall import Wall
 from .tilemap import Map
 from . import settings
 from . import gen_map

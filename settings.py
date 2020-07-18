@@ -1,6 +1,9 @@
 import pygame as pg
 from os import path
 
+# Create vector
+vec = pg.math.Vector2
+
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)

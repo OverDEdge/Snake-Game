@@ -1,49 +1,10 @@
 import pygame as pg
-import random
 from os import path
 from . import settings
-
-# Create vector
-vec = pg.math.Vector2
-
-def check_for_collision(sprite, group, remove):
-    '''
-    Checks for collision between a sprite and a group
-    '''
-    hits = pg.sprite.spritecollide(sprite, group, remove)
-    if hits:
-        return True
-
-def remove_background_from_img(image, colorkey):
-    '''
-    Removes background from image
-    '''
-
-    image.set_colorkey(colorkey)
-    image.convert_alpha()
-
-    return image
-
-# Animate movement for a sprite
-def animate_moving(sprite, image_array):
-    now = pg.time.get_ticks()
-    if (now - sprite.last_change_img_time) > sprite.img_upd_time:
-        sprite.image_id += 1
-
-        if sprite.image_id >= len(image_array):
-            sprite.image_id = 0
-
-        image = image_array[sprite.image_id]
-
-        sprite.last_change_img_time = now
-        sprite.non_rot_image = image
-
-def load_moving_images(sprite, spritesheet, image_coordinates, colorkey):
-    for location in image_coordinates:
-        image = spritesheet.get_image(*location, settings.SIZE)
-        image = remove_background_from_img(image, colorkey)
-        sprite.images.append(image)
-
+from .settings import vec
+from .sprite_methods import check_for_collision, remove_background_from_img, animate_moving, load_moving_images
+from .body_part import BodyPart
+from .food import Food
 
 class Snake(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -281,95 +242,3 @@ class Snake(pg.sprite.Sprite):
         if self.prev_dir != self.dir:
             self.pos_update_time = 0
             self.prev_dir = self.dir
-
-class BodyPart(pg.sprite.Sprite):
-    def __init__(self, game, snake, x, y):
-        self._layer = settings.BODY_LAYER
-        self.groups = game.all_sprites, game.snake_body
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.transform.rotate(self.game.snake_spritesheet.get_image(*settings.SNAKE_IMG_TAIL, settings.SIZE), 90)
-        self.rect = self.image.get_rect()
-        self.pos = vec(x, y) * settings.TILESIZE
-        self.rect.topleft = self.pos
-
-    def update(self):
-        # Update rectangle
-        self.rect.topleft = self.pos
-
-class Food(pg.sprite.Sprite):
-    def __init__(self, game):
-        self._layer = settings.FOOD_LAYER
-        self.game = game
-        self.groups = game.all_sprites, game.food
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.image = pg.transform.scale(pg.image.load(path.join(settings.IMG_FOLDER, settings.FOOD_IMG)).convert(), settings.SIZE)
-        self.image = remove_background_from_img(self.image, settings.BLACK)
-        self.rect = self.image.get_rect()
-        self.place_food()
-        self.pos_update_time = 0
-
-    def place_food(self):
-        '''
-        Places food at a random location, checking that a sprite doesn't already
-        exist there.
-        '''
-        self.pos = vec(random.randrange(settings.GRIDWIDTH - 1), random.randrange(settings.GRIDHEIGHT - 1)) * settings.TILESIZE
-        self.rect.topleft = self.pos
-        if check_for_collision(self, self.game.walls, False) or check_for_collision(self, self.game.snake_body, False):
-            self.place_food()
-
-    def update(self):
-        now = pg.time.get_ticks()
-
-        if (now - self.pos_update_time) > settings.FOOD_POS_UPDATE_RATE:
-            self.get_new_position()
-            self.pos_update_time = now
-
-    def get_new_position(self):
-        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        dir = random.choice(directions)
-        self.pos.x += dir[0] * settings.TILESIZE
-        self.pos.y += dir[1] * settings.TILESIZE
-        self.rect.topleft = self.pos
-        if check_for_collision(self, self.game.walls, False) or check_for_collision(self, self.game.snake_body, False):
-            self.pos.x -= dir[0] * settings.TILESIZE
-            self.pos.y -= dir[1] * settings.TILESIZE
-            self.get_new_position()
-
-class Wall(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        # Add to sprites group
-        self._layer = settings.WALL_LAYER
-        self.groups = game.all_sprites, game.walls
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.transform.scale(pg.image.load(path.join(settings.IMG_FOLDER, settings.WALL_IMG)).convert(), settings.SIZE)
-        self.rect = self.image.get_rect()
-        self.pos = vec(x, y) * settings.TILESIZE
-        self.rect.topleft = self.pos
-
-class Ground(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        # Add to sprites group
-        self._layer = settings.GROUND_LAYER
-        self.groups = game.all_sprites, game.ground
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface(settings.SIZE)
-        self.image.fill(settings.BGCOLOR)
-        self.rect = self.image.get_rect()
-        self.pos = vec(x, y) * settings.TILESIZE
-        self.rect.topleft = self.pos
-
-class Spritesheet:
-    # Utility class for loading and parsing spritessheets
-    def __init__(self, filename):
-        self.spritesheet = pg.image.load(filename).convert()
-
-    def get_image(self, x, y, width, height, size):
-        # Grab an image out of a larger Spreadsheet
-        image = pg.Surface((width, height))
-        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
-        image = pg.transform.scale(image, (int(size[0]), int(size[1])))
-        return image
