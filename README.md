@@ -1,11 +1,12 @@
 # Snake Game
 This is a Snake Game made in Pygame.
+
 Necessary packages:
 
 - **Pygame**
 
 ## Game mechanics
-The snake is controlled by using the arrow keys (**UP**, **DOWN**, **LEFT** and **RIGHT**) or **'a' = Left**, **'s' = Down**, **'d' = Right**, **'w' = Up** on the keyboard.
+The snake is controlled by using the arrow keys (**UP**, **DOWN**, **LEFT** and **RIGHT**) or **'a'** = Left, **'s'** = Down, **'d'** = Right, **'w'** = Up on the keyboard.
 
 When the snake eats an apple it will grow by one square and a new apple will pop up at a random location on the screen. The apple will move randomly in any direction one square every second.
 
