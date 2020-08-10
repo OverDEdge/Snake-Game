@@ -22,7 +22,7 @@ The aim of the game is to eat apples and get as high a score as possible. For ev
 At every step of 50 points the snake will speed up, reaching the max speed at (currently) 350 points.
 
 ## How to start the application
-Download a copy of the repository into a folder named 'snake'. Navigate to location where newly created 'snake' folder is located. In Command Prompt type:
+Download a copy of the repository stand in root directory and in Command Prompt type:
 
 ```
 python -m snake
